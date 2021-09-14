@@ -72,10 +72,29 @@ void loop(){/*
       menuVal=0;
     }
   }*/
+  boardMapping();//atualiza a aquisição
+  for(int i=0;i<64;i++){
+      getBoard(&boardNow[i],i); //pega a matrix da aquisição
+      if(boardNow[i]==1){
+        movepecaTFT('p',i);
+      }else{
+        movepecaTFT('_',i);   
+      }
+  }
+  //serial
+  printf("_________________________\n");
+  printf("board[64]=\n");
+  for(int i=0;i<64;i++){
+  printf("%d ,",boardNow[i]);
+    if((i+1)%8==0){
+    printf("\n");
+    }
+  }
+  /*
   if(menuVal==0){
     AtualizaChessBoard();
   }
-  
+  */
 }
 
 /*
