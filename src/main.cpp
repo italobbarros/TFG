@@ -18,17 +18,6 @@ int temp=millis();;
 int menuVal=0,encAnt=0,SwAnt,SwAtual;
 int val=1;
 
-
-// Set these to run example.
-#define FIREBASE_HOST "https://smartchessboard-f9d59-default-rtdb.firebaseio.com/"
-#define FIREBASE_AUTH "jxBx1Aa0ioPjp8mm5cCrgFD8AXftWS8cV6DBmiPH"
-
-/* 1. Define the WiFi credentials */
-#define WIFI_SSID "Italo"
-#define WIFI_PASSWORD "27751234000127"
-
-
-
 void setup(){
   Serial.begin(9600);
   tftbegin();
@@ -72,33 +61,15 @@ void loop(){/*
       menuVal=0;
     }
   }*/
-  boardMapping();//atualiza a aquisição
-  for(int i=0;i<64;i++){
-      getBoard(&boardNow[i],i); //pega a matrix da aquisição
-      if(boardNow[i]==1){
-        movepecaTFT('p',i);
-      }else{
-        movepecaTFT('_',i);   
-      }
-  }
-  //serial
-  printf("_________________________\n");
-  printf("board[64]=\n");
-  for(int i=0;i<64;i++){
-  printf("%d ,",boardNow[i]);
-    if((i+1)%8==0){
-    printf("\n");
-    }
-  }
-  /*
+
+  
   if(menuVal==0){
     AtualizaChessBoard();
   }
-  */
 }
 
 /*
-  boardMapping();//atualiza a aquisição
+    boardMapping();//atualiza a aquisição
   for(int i=0;i<64;i++){
       getBoard(&boardNow[i],i); //pega a matrix da aquisição
       if(boardNow[i]==1){

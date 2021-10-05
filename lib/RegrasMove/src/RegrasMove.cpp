@@ -1,5 +1,6 @@
 #include "RegrasMove.h"
 #include "GetBoard.h"
+#include "config.h"
 
 int mov=0;
 int comeBoard[64],moveBoard[64];

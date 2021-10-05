@@ -3,6 +3,7 @@
 #include "Rotaryencoder.h"
 #include "config.h"
 
+
 int board[64];
 int enc;
 static bool s0,s1,s2,s3;

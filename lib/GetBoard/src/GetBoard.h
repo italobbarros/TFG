@@ -1,9 +1,16 @@
 #ifndef _GETBOARD_H_
 #define _GETBOARD_H_
 #include "Arduino.h"
+#include "config.h"
+    
+    #define DEBUG 1
 
-#define SUCESS 1
-#define FAILED 2
+    #define BRANCAS 0
+    #define PRETAS 1
+
+    #define SUCESS 1
+    #define FAILED 2
+
 
       void printboard(int casas);
       void GetBoardbegin(void);

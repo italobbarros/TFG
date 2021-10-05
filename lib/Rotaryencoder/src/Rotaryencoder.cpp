@@ -1,6 +1,6 @@
 #include "Rotaryencoder.h"
 #include <Arduino.h> 
- 
+ #include "config.h"
 float counter = 0; 
 int aState;
 int aLastState; 
