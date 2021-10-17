@@ -20,8 +20,10 @@ static int boardLast[64];
 static int boardComp[64];
 static int comeB[64],moveB[64];
 
+bool FIM =false,acabou=false;
 String PGN="";
-bool auxilio=true,jogando=false;
+
+bool auxilio=true,jogando=false,rock=false,ROCK=false;
 char chessBoard[65]={
         'R','N','B','Q','K','B','N','R', 
         'P','P','P','P','P','P','P','P',
@@ -41,7 +43,6 @@ void chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posi
     for(int i=0;i<64;i++){
         movepecaTFT(chessBoard[i],i); 
     }
-
 }
 void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
     SW1Last = SW1Atual;
@@ -103,10 +104,8 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
             }else{
                 Serial.println("ERROR no movimento");
             }
-            
-            Serial.println("PGN= "+ PGN);
-        }
-        
+            Serial.println("PGN = "+ PGN);
+        }  
     }
     if(auxilio){
         auxilioJogo(); //função que da as sugestoes de vezs
@@ -127,7 +126,7 @@ void movepeca(int PosInicial, int PosFinal){
 
 
 void createPGN(int casa,bool tipo){
-    char colunas[8]={'A','B','C','D','E','F','G','H'};
+    char colunas[8]={'a','b','c','d','e','f','g','h'};
     char linhas[8]={'8','7','6','5','4','3','2','1'};
     int i,j;
   //decodificaçÃo de qual casa
@@ -149,10 +148,51 @@ void createPGN(int casa,bool tipo){
       i=7; j= casa-(8*7);
     } 
     if(tipo==BRANCAS){
-        PGN += String(rodada)+ ". " + String(colunas[j]) + String(linhas[i]) + " ";
-    }else{
-        PGN += String(colunas[j]) + String(linhas[i]) + " ";
+        if(rock){ // rock pequeno O-O
+            PGN += String(rodada)+ ". " + "O-O" +" ";
+            rock =false;
+            
+        }
+        else if (ROCK){ //ROCK GRANDE o-o-o
+            PGN += String(rodada)+ ". " + "O-O-O" +" ";
+            ROCK =false;
+        }
+        else{
+            if(chessBoard[casa]=='p'){
+                PGN += String(rodada)+ ". " + String(colunas[j]) + String(linhas[i]) + " ";
+            }else{
+                PGN += String(rodada)+ ". " + String(chessBoard[casa]) + String(colunas[j]) + String(linhas[i]) + " ";
+            }
+        }
+        
+    }else{ //PRETAS
+        if(rock){ // rock pequeno O-O
+            PGN += "O-O ";
+            rock =false; 
+        }
+        else if(ROCK){ //ROCK GRANDE o-o-o
+            PGN += "O-O-O ";
+            ROCK =false;
+        }
+        else{
+            if(chessBoard[casa]=='P'){
+                PGN += String(colunas[j]) + String(linhas[i]) + " ";
+            }else{
+                PGN += String(chessBoard[casa]) + String(colunas[j]) + String(linhas[i]) + " ";
+            }
+        }
     }
+    if(acabou){
+        FIM = true;
+    }
+
+}
+String getPGN(void){
+    return PGN;
+}
+
+bool getFIM(void){
+    return FIM;
 }
 
 void auxilioJogo(void){

@@ -8,6 +8,7 @@
 #include "SPI.h"
 #include <Rotaryencoder.h>
 #include <ChessBoard.h>
+#include "connection.h"
 #include <TFT.h>
 #include <GetBoard.h>
 #include "config.h"
@@ -17,6 +18,7 @@ char chessB[65];
 int temp=millis();;
 int menuVal=0,encAnt=0,SwAnt,SwAtual;
 int val=1;
+
 
 void setup(){
   Serial.begin(9600);
@@ -61,10 +63,31 @@ void loop(){/*
       menuVal=0;
     }
   }*/
-
-  
+  /*
+  boardMapping();//atualiza a aquisição
+  for(int i=0;i<64;i++){
+      getBoard(&boardNow[i],i); //pega a matrix da aquisição
+      if(boardNow[i]==1){
+        movepecaTFT('p',i);
+      }else{
+        movepecaTFT('_',i);   
+      }
+  }
+  //serial
+  printf("_________________________\n");
+  printf("board[64]=\n");
+  for(int i=0;i<64;i++){
+  printf("%d ,",boardNow[i]);
+    if((i+1)%8==0){
+    printf("\n");
+    }
+  }
+  delay(1000);*/
   if(menuVal==0){
     AtualizaChessBoard();
+  }
+  if(getFIM()){
+    sendPGN();
   }
 }
 

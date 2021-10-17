@@ -3,6 +3,10 @@
 #include "TFT_eSPI.h"
 #include <pecas.h>
 
+
+
+
+
 TFT_eSPI tft = TFT_eSPI(); 
 
 void tftbegin(void){
@@ -15,15 +19,15 @@ void tftbegin(void){
         for(int j=0;j<8;j++){ //coluna
             if((i%2)){
                 if(j%2){
-                tft.pushImage(8+j*38, 92+i*38, 38, 38, casabranca);
+                tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, casabranca);
                 }else{
-                tft.pushImage(8+j*38, 92+i*38, 38, 38, casapreta);
+                tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, casapreta);
                 }
             }else{
                 if(j%2){
-                tft.pushImage(8+j*38, 92+i*38, 38, 38, casapreta);
+                tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, casapreta);
                 }else{
-                tft.pushImage(8+j*38, 92+i*38, 38, 38, casabranca);  
+                tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, casabranca);  
                 }
             }
         }
@@ -50,20 +54,20 @@ void setaCasa(int casa, const uint16_t *arrayBranca, const uint16_t *arrayPreta)
     }else if((casa>=56) & (casa<64)){
       i=7; j= casa-(8*7);
     } 
-      //a partir dos parametros de i,j é pintado a casa especifica     
-      if((i%2)){
-        if(j%2){
-          tft.pushImage(8+j*38, 92+i*38, 38, 38, arrayBranca);
-        }else{
-          tft.pushImage(8+j*38, 92+i*38, 38, 38, arrayPreta);
-        }
+    //a partir dos parametros de i,j é pintado a casa especifica     
+    if((i%2)){
+      if(j%2){
+        tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, arrayBranca);
       }else{
-        if(j%2){
-          tft.pushImage(8+j*38, 92+i*38, 38, 38, arrayPreta);
-        }else{
-          tft.pushImage(8+j*38, 92+i*38, 38, 38, arrayBranca);  
-        }
+        tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, arrayPreta);
       }
+    }else{
+      if(j%2){
+        tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, arrayPreta);
+      }else{
+        tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, arrayBranca);  
+      }
+    }
 }
 void simbolCasa(int casa,int tipo){
   int i,j;
@@ -89,61 +93,61 @@ void simbolCasa(int casa,int tipo){
       if(tipo==1){
         if((i%2)){
           if (j % 2){ //peça escolhida
-            tft.drawRect(8 + j * 38, 92 + i * 38, 38, 38, TFT_RED);
-            tft.drawRect(9 + j * 38, 93 + i * 38, 36, 36, TFT_RED);
+            tft.drawRect(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, TFT_RED);
+            tft.drawRect((offsetX+1)+(j*casaWidth), (offsetY+1)+(i*casaHeight), casaWidth-2, casaHeight-2, TFT_RED);
           }
           else{
-            tft.drawRect(8 + j * 38, 92 + i * 38, 38, 38, TFT_RED);
-            tft.drawRect(9 + j * 38, 93 + i * 38, 36, 36, TFT_RED);
+            tft.drawRect(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, TFT_RED);
+            tft.drawRect((offsetX+1)+(j*casaWidth), (offsetY+1)+(i*casaHeight), casaWidth-2, casaHeight-2, TFT_RED);
           }
         }
         else{
           if (j % 2){
-            tft.drawRect(8 + j * 38, 92 + i * 38, 38, 38, TFT_RED);
-            tft.drawRect(9 + j * 38, 93 + i * 38, 36, 36, TFT_RED);
+            tft.drawRect(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, TFT_RED);
+            tft.drawRect((offsetX+1)+(j*casaWidth), (offsetY+1)+(i*casaHeight), casaWidth-2, casaHeight-2, TFT_RED);
           }
           else{
-            tft.drawRect(8 + j * 38, 92 + i * 38, 38, 38, TFT_RED);
-            tft.drawRect(9 + j * 38, 93 + i * 38, 36, 36, TFT_RED);
+            tft.drawRect(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, TFT_RED);
+            tft.drawRect((offsetX+1)+(j*casaWidth), (offsetY+1)+(i*casaHeight), casaWidth-2, casaHeight-2, TFT_RED);
           }
         }
       }else if(tipo==2){ // posição para a qual vai movimentar
         if((i%2)){
           if (j % 2){
-            tft.fillCircle(27 + j * 38, 111 + i * 38, 5, TFT_RED);
+            tft.fillCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth, raio, TFT_RED); 
           }
           else{
-            tft.fillCircle(27 + j * 38, 111 + i * 38, 5, TFT_RED);
+            tft.fillCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth, raio, TFT_RED);
           }
         }
         else{
           if (j % 2){
-            tft.fillCircle(27 + j * 38, 111 + i * 38, 5, TFT_RED);
+            tft.fillCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth, raio, TFT_RED);
           }
           else{
-            tft.fillCircle(27 + j * 38, 111 + i * 38, 5, TFT_RED);
+            tft.fillCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth, raio, TFT_RED);
           }
         }
-      }else if(tipo==3){ // posição para a qual vai movimentar
+      }else if(tipo==3){ // posição para a qual vai atacar
         if((i%2)){
           if (j % 2){
-            tft.drawCircle(27 + j * 38, 111 + i * 38, 19, TFT_RED);
-            tft.drawCircle(27 + j * 38, 111 + i * 38, 15, TFT_RED);
+            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1, TFT_RED);
+            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1-4, TFT_RED);
           }
           else{
-            tft.drawCircle(27 + j * 38, 111 + i * 38, 19, TFT_RED);
-            tft.drawCircle(27 + j * 38, 111 + i * 38, 15, TFT_RED);
+            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1, TFT_RED);
+            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1-4, TFT_RED);
           }
         }
         else{
           if (j % 2){
-            tft.drawCircle(27 + j * 38, 111 + i * 38, 19, TFT_RED);
-            tft.drawCircle(27 + j * 38, 111 + i * 38, 15, TFT_RED);
+            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1, TFT_RED);
+            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1-4, TFT_RED);
 
           }
           else{
-            tft.drawCircle(27 + j * 38, 111 + i * 38, 19, TFT_RED);
-            tft.drawCircle(27 + j * 38, 111 + i * 38, 15, TFT_RED);
+            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1, TFT_RED);
+            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1-4, TFT_RED);
           }
         }
       }   
