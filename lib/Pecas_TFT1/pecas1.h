@@ -1,8 +1,16 @@
-#ifndef PECAS_H
-#define PECAS_H
+#ifndef PECAS1_H
+#define PECAS1_H
 
-#include <casabranca.h>
-#include <casapreta.h>
+
+#define casaWidth 38
+#define casaHeight 38
+#define offsetX 8
+#define offsetY 92
+#define raio 5
+#define raio1 19
+
+#include "casabranca.h"
+#include "casapreta.h"
 
 #include "brancas/bispobranco.h"
 #include "brancas/bispobranco1.h"
@@ -31,4 +39,7 @@
 #include "pretas/torrepreta1.h"
 
 
-#endif /*PECAS_H*/
+
+
+
+#endif /*PECAS1_H*/

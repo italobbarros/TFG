@@ -1,9 +1,5 @@
 #include "TFT.h"
-
 #include "TFT_eSPI.h"
-#include <pecas.h>
-
-
 
 
 

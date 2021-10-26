@@ -33,6 +33,7 @@ char chessBoard[65]={
         '_','_','_','_','_','_','_','_',
         'p','p','p','p','p','p','p','p',
         'r','n','b','q','k','b','n','r'};
+        
 int SW1Last,SW1Atual=1;
 int SW2Last,SW2Atual=1;
 bool vez=0;// a branca começa

@@ -7,6 +7,14 @@
 #define chessItalo 1
 
 
+#ifdef chessItalo
+    #include "pecas1.h"
+#endif
+
+#ifdef chessThimotti
+    #include "pecas2.h"
+#endif
+
 /**
  * @param casaWidth valor da largura da casa
  * @param casaHeight valor da altura da casa
@@ -15,23 +23,7 @@
  * @param raio é o raio do circulo preenchido definido para as casas que podem ser movimentadas
  * @param raio1 é o raio do circulo que irá identificar as casas que podem ser comidas  
  */
-#ifdef chessThimotti
-    #define casaWidth 30
-    #define casaHeight 30
-    #define offsetX 0
-    #define offsetY 40
-    #define raio 5
-    #define raio1 19
-#endif
 
-#ifdef chessItalo
-    #define casaWidth 38
-    #define casaHeight 38
-    #define offsetX 8
-    #define offsetY 92
-    #define raio 5
-    #define raio1 19
-#endif
 
 
 /**
