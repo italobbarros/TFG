@@ -9,6 +9,8 @@
 #define raio 5
 #define raio1 19
 
+#define rotationTFT 0
+
 #include "casabranca.h"
 #include "casapreta.h"
 

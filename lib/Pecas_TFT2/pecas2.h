@@ -1,5 +1,5 @@
-#ifndef PECAS_H
-#define PECAS_H
+#ifndef PECAS2_H
+#define PECAS2_H
 
 
 
@@ -10,7 +10,7 @@
 #define raio 5
 #define raio1 19
 
-
+#define rotationTFT 2
 
 #include "casabranca.h"
 #include "casapreta.h"
@@ -43,4 +43,4 @@
 
 
 
-#endif /*PECAS_H*/
+#endif /*PECAS2_H*/
