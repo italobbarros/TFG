@@ -2,7 +2,8 @@
 #define PECAS2_H
 
 
-
+#define widthTFT 320
+#define heightTFT 240
 #define casaWidth 30
 #define casaHeight 30
 #define offsetX 0

@@ -208,6 +208,13 @@ void fbPlayerTFT(int x, int y){
   tft.setTextPadding(0); // Setting to zero switches off padding
   tft.drawString("Jogo rapido", x, y, 4);
 }
+void textErrorTFT(const char *stringAtual,int x, int y){
+  tft.setTextSize(1);
+  tft.setTextColor(TFT_WHITE,TFT_RED);
+  tft.setTextDatum(TC_DATUM);
+  tft.drawString(stringAtual, x, y, 4);
+}
+
 void printTextTFT1(const char *stringAtual,int x, int y){
   tft.fillRoundRect(0,y-35,320,100,20,TFT_BLACK);
   tft.setTextSize(1);

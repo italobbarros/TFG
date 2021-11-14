@@ -14,14 +14,13 @@
 
       void printboard(int casas);
       void GetBoardbegin(void);
-      void getBoard(int* parameter, int i);
+      void getBoard(bool* parameter, int i);
       void boardMapping(void);
       void muxRead(int a, int b, int c, int d);
       void muxMapping(int selectCanal);
       void buzzerActive(bool buzzer);
       //void IRAM_ATTR encoderRead_isr();
-      int push1Read(void);
-      int push2Read(void);
+
       int getEncoder(void);
       int encoderSW(void);
   enum Square{

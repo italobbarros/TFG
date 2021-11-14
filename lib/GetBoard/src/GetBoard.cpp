@@ -4,7 +4,7 @@
 #include "config.h"
 
 
-int board[64];
+bool board[64];
 int enc;
 static bool s0,s1,s2,s3;
 int sw1,sw2;
@@ -155,17 +155,11 @@ void boardMapping(void){
         muxMapping(selectMux);
     }
 }
-void getBoard(int *parameter, int i){
-    int b = board[i];
+void getBoard(bool *parameter, int i){
+    bool b = board[i];
     *parameter = b;
 }
 
-int  push1Read(void){
-    return digitalRead(pinPUSH1);
-}
-int push2Read(void){
-    return digitalRead(pinPUSH2);
-}
 
 void buzzerActive(bool buzzer){
     digitalWrite(pinBuzzer,buzzer);

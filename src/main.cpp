@@ -12,6 +12,8 @@
 #include <TFT.h>
 #include <GetBoard.h>
 #include "config.h"
+#include "Interrupt.h"
+
 
 static int boardNow[64];
 char chessB[65];
@@ -22,6 +24,7 @@ int val=1;
 
 void setup(){
   Serial.begin(9600);
+  InterruptBegin();
   tftbegin();
   GetBoardbegin();
   chessBoardBegin();
@@ -90,6 +93,9 @@ void loop(){/*
     sendPGN();
   }
 }
+
+
+
 
 /*
     boardMapping();//atualiza a aquisição

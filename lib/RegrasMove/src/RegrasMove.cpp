@@ -153,9 +153,9 @@ void RegraChess(char peca,int casaAtual){
   }
 }
 
-void getTest(int *come, int *move,int i){
-    int c = comeBoard[i];
-    int m = moveBoard[i];
+void getTest(bool *come, bool *move,int i){
+    bool c = comeBoard[i];
+    bool m = moveBoard[i];
     *come = c;
     *move = m;
 }

@@ -46,6 +46,7 @@ void simbolCasa(int casa,int tipo);
 void movepecaTFT(char peca,int casaAtual);
 void tftbegin(void);
 void fbPlayerTFT(int x, int y);
+void textErrorTFT(const char *stringAtual,int x, int y);
 void printTextTFT1(const char *stringAtual,int x, int y);
 void printTextTFT2(const char *stringAtual,const char *stringAnterior,int x, int y);
 
