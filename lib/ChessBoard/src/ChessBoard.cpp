@@ -53,7 +53,7 @@ int aux1=0,aux=0,chegou,saiu=65,rodada=1; // rodada começa em 1
 int saiuAntSave=66;
 int y=0;
 
-
+/*
 Ticker tkSecond;												// Second - Timer for Updating Datetime Structure
 
 void Second_Tick(void){
@@ -62,7 +62,7 @@ void Second_Tick(void){
         FIM=true;
     }
 
-}
+}*/
 
 void chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posição inicial
 
@@ -70,7 +70,7 @@ void chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posi
         for(int i=0;i<64;i++){
             movepecaTFT(chessBoard[i],i); 
         }
-        tkSecond.attach(1, Second_Tick);// Inicializa a função de tick para comparações dos botoes
+        //tkSecond.attach(1, Second_Tick);// Inicializa a função de tick para comparações dos botoes
     }else{
         textErrorTFT("Error na inicialização do tabuleiro",widthTFT/2,heightTFT/2); //irá printar na tela do dispositivo uma imagem de error
     }
@@ -78,7 +78,7 @@ void chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posi
 }
 
 char checkBoard(void){
-        boardMapping();//atualiza a aquisição
+    boardMapping();//atualiza a aquisição
     for(int i=0;i<64;i++){
         getBoard(&boardNow[i],i); //pega a matrix da aquisição
         if(referencia[i] != boardNow[i]){//se a posição do tabuleiro não for inicializado corretamente ele vai retornar failed
@@ -101,7 +101,7 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
 
     boardMapping();//atualiza a aquisição
     for(int i=0;i<64;i++){
-        getBoard(&boardNow[i],i); //pega a matrix da aquisição
+        getBoard(&boardNow[i],i); //pega a matriz da aquisição
         if((boardLast[i]- boardNow[i])==1){//retirou a peça
             saiu = i; //posição da peça retirada
             jogando = true; // flag para marcar que uma peça foi retirada do tabuleiro
@@ -260,9 +260,6 @@ void createPGN(int casaAnt,int casa,bool tipo){
             }            
         }
     }
-    if(acabou){
-        FIM = true;
-    }
 
 }
 String getPGN(void){
@@ -270,7 +267,7 @@ String getPGN(void){
 }
 
 bool getFIM(void){
-    return FIM;
+    return getFim();
 }
 
 void auxilioJogo(void){

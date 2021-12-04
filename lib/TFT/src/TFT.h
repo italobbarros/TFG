@@ -3,8 +3,8 @@
 #include <Arduino.h>
 #include "config.h"
 
-//#define chessThimotti 1
-#define chessItalo 1
+#define chessThimotti 
+//#define chessItalo 
 
 
 #ifdef chessItalo

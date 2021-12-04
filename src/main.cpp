@@ -1,10 +1,4 @@
-
 #include <Arduino.h>
-
-//#include <ArduinoJson.h>
-//#include <WiFi.h>
-//#include <IOXhop_FirebaseESP32.h>
-
 #include "SPI.h"
 #include <Rotaryencoder.h>
 #include <ChessBoard.h>
@@ -29,19 +23,8 @@ void setup(){
   GetBoardbegin();
   chessBoardBegin();
   SwAtual = encoderSW();
-/*
-// connect to wifi.
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  Serial.print("connecting");
-  while (WiFi.status() != WL_CONNECTED){
-    Serial.print(".");
-    delay(500);
-  }
-  Serial.println();
-  Serial.print("connected: ");
-  Serial.println(WiFi.localIP());
-  
-  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);*/
+
+  connectWiFI();
 }
 void loop(){/*
   if(millis() - temp > 100){

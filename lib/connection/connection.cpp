@@ -7,13 +7,13 @@
 
 //curl -d "pgn=1. e4 e5 2. Nf3 Nf6 3. Nxe5 Qe7 4. d4 d6 5. Nf3 Qxe4+ 6. Be2 Be7 7. Nc3 Qg6 8. Bf4 Qxg2 9. Kd2 Qxf2 10. Rf1 Qg2 11. Qe1" -Ls -w %{url_effective} -o /dev/null https://lichess.org/import
 
-const char* ssid = "Rep Oscar Cavara";
-const char* password =  "tanoquadro";
+const char* ssid = "Italo";
+const char* password =  "277512340001";
 DynamicJsonDocument doc(1024);
 const char* serverName = "https://lichess.org/api/import";
 
-String apiKey = "107460";              //Add your Token number that bot has sent you on WhatsApp messenger
-String phone_number = "+553587060403"; //Add your WhatsApp app registered phone number (same number that bot send you in url)
+String apiKey = "318651";              //Add your Token number that bot has sent you on WhatsApp messenger
+String phone_number = "+553599082130"; //Add your WhatsApp app registered phone number (same number that bot send you in url)
 
 String url;                            //url String will be used to store the final generated URL
 
