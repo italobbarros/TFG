@@ -210,8 +210,8 @@ void fbPlayerTFT(int x, int y){
 }
 void textErrorTFT(const char *stringAtual,int x, int y){
   tft.setTextSize(1);
-  tft.setTextColor(TFT_WHITE,TFT_RED);
-  tft.setTextDatum(TC_DATUM);
+  tft.setTextColor(TFT_RED,TFT_BLACK);
+  tft.setTextDatum(CC_DATUM);
   tft.drawString(stringAtual, x, y, 4);
 }
 

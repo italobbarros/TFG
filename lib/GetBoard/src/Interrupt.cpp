@@ -4,7 +4,7 @@
 unsigned long tempo_fim = 0, tempo_fim2 = 0;
 #define Tempo_total 3000
 
-bool Fim, botao1, botao2;
+bool Fim, botao1=HIGH, botao2=HIGH;
 
 void InterruptBegin()
 {

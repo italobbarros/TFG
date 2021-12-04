@@ -3,7 +3,7 @@
 #include <Arduino.h>
 #include <config.h>
 
-void chessBoardBegin(void); //Inicialização do tabuleiro com as peças na posição inicial
+bool chessBoardBegin(void); //Inicialização do tabuleiro com as peças na posição inicial
 
 /**
  * @brief atribui a variável parameter a matrix do tabuleiro
@@ -18,7 +18,7 @@ void getChess(char *parameter, int i);
  * 
  * @return char 
  */
-char checkBoard(void);
+bool checkBoard(void);
 void AtualizaChessBoard(void);
 void menu(void);
 void createPGN(int casaAnt,int casa,bool tipo);

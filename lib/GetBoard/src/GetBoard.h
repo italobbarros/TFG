@@ -9,7 +9,7 @@
     #define PRETAS 1
 
     #define SUCESS 1
-    #define FAILED 2
+    #define FAILED 0
 
 
       void printboard(int casas);

@@ -8,7 +8,7 @@
 //curl -d "pgn=1. e4 e5 2. Nf3 Nf6 3. Nxe5 Qe7 4. d4 d6 5. Nf3 Qxe4+ 6. Be2 Be7 7. Nc3 Qg6 8. Bf4 Qxg2 9. Kd2 Qxf2 10. Rf1 Qg2 11. Qe1" -Ls -w %{url_effective} -o /dev/null https://lichess.org/import
 
 const char* ssid = "Italo";
-const char* password =  "277512340001";
+const char* password =  "27751234000127";
 DynamicJsonDocument doc(1024);
 const char* serverName = "https://lichess.org/api/import";
 
@@ -78,8 +78,6 @@ void  message_to_whatsapp(String message)       // user define function to send 
 
 void connectWiFI()
 {
-
-  Serial.begin(115200);
   WiFi.begin(ssid, password);
  
   while (WiFi.status() != WL_CONNECTED) {

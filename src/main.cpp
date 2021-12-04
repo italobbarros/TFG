@@ -9,24 +9,68 @@
 #include "Interrupt.h"
 
 
-static int boardNow[64];
+static bool boardNow[64];
 char chessB[65];
 int temp=millis();;
-int menuVal=0,encAnt=0,SwAnt,SwAtual;
+int state=0,encAnt=0,SwAnt,SwAtual;
 int val=1;
 
 
 void setup(){
-  Serial.begin(9600);
+  Serial.begin(115200);
   InterruptBegin();
   tftbegin();
   GetBoardbegin();
-  chessBoardBegin();
-  SwAtual = encoderSW();
+  if(chessBoardBegin()==FAILED){
+    state=0;
+    Serial.println("ERROR!!!");
+  }else{
+    state=1;
+    SwAtual = encoderSW();
+    connectWiFI();
+  }
 
-  connectWiFI();
 }
-void loop(){/*
+void loop(){
+  switch (state){
+    case 0:
+      if(chessBoardBegin()==SUCESS){
+        state=1;
+        SwAtual = encoderSW();
+        connectWiFI();
+      }else{
+        state=3;
+      }
+      delay(1000);
+      break;
+    case 1:
+      AtualizaChessBoard();
+      if(getFIM()){
+        sendPGN();
+      }
+      break;
+
+    default:
+      boardMapping();//atualiza a aquisição
+      for(int i=0;i<64;i++){
+          getBoard(&boardNow[i],i); //pega a matrix da aquisição
+          if(boardNow[i]==1){
+            movepecaTFT('p',i);
+          }else{
+            movepecaTFT('_',i);   
+          }
+      }
+      Serial.println("botao1= "+ String(push1Read()));
+      Serial.println("botao2= "+ String(push2Read()));
+      state=0;
+      delay(1000);
+      break;
+  }
+
+}
+
+
+/*
   if(millis() - temp > 100){
     for(int i=0;i<64;i++){
       getChess(&chessB[i],i); //pega a matrix da aquisição
@@ -69,16 +113,6 @@ void loop(){/*
     }
   }
   delay(1000);*/
-  if(menuVal==0){
-    AtualizaChessBoard();
-  }
-  if(getFIM()){
-    sendPGN();
-  }
-}
-
-
-
 
 /*
     boardMapping();//atualiza a aquisição

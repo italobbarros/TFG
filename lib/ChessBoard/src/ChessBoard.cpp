@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include "config.h"
 #include "RegrasMove.h"
-#include <Ticker.h>	 //Biblioteca para gerar eventos de tempo (ticker)
 #include "Interrupt.h"
 
 int jogo[16]={e2,e4,e7,e5,g1,f3,f8,d6,d2,d4,f7,f6,f1,c4,c7,c6};
@@ -53,37 +52,35 @@ int aux1=0,aux=0,chegou,saiu=65,rodada=1; // rodada começa em 1
 int saiuAntSave=66;
 int y=0;
 
-/*
-Ticker tkSecond;												// Second - Timer for Updating Datetime Structure
 
-void Second_Tick(void){
 
-    if(getFim()){
-        FIM=true;
-    }
-
-}*/
-
-void chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posição inicial
-
+bool chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posição inicial
     if(checkBoard()==SUCESS){
         for(int i=0;i<64;i++){
             movepecaTFT(chessBoard[i],i); 
         }
-        //tkSecond.attach(1, Second_Tick);// Inicializa a função de tick para comparações dos botoes
+        return SUCESS;
     }else{
-        textErrorTFT("Error na inicialização do tabuleiro",widthTFT/2,heightTFT/2); //irá printar na tela do dispositivo uma imagem de error
+        textErrorTFT("Error na Inicialização!",heightTFT/2,widthTFT/2); //irá printar na tela do dispositivo uma imagem de error
+        return FAILED;
     }
 
 }
 
-char checkBoard(void){
+bool checkBoard(void){
     boardMapping();//atualiza a aquisição
+    Serial.println("checkBoard[]=");
     for(int i=0;i<64;i++){
         getBoard(&boardNow[i],i); //pega a matrix da aquisição
+        Serial.print(String(boardNow[i]) + " ,");
+            if((i+1)%8==0){
+            printf("\n");
+            }
         if(referencia[i] != boardNow[i]){//se a posição do tabuleiro não for inicializado corretamente ele vai retornar failed
+            Serial.println("Error na inicialização!");
             return FAILED;
         }
+
     } 
     return SUCESS;
 }
