@@ -20,7 +20,7 @@ void getChess(char *parameter, int i);
  */
 bool checkBoard(void);
 void AtualizaChessBoard(void);
-void menu(void);
+void testeXadrez(void);
 void createPGN(int casaAnt,int casa,bool tipo);
 void movBoard(int PosInicial, int PosFinal);
 void movepeca(int PosInicial, int PosFinal);

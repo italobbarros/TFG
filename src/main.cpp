@@ -35,9 +35,9 @@ void loop(){
   switch (state){
     case 0:
       if(chessBoardBegin()==SUCESS){
-        state=1;
         SwAtual = encoderSW();
         connectWiFI();
+        state=1;
       }else{
         state=3;
       }
@@ -46,7 +46,7 @@ void loop(){
     case 1:
       AtualizaChessBoard();
       if(getFIM()){
-        sendPGN();
+        //sendPGN();
       }
       break;
 
@@ -60,8 +60,6 @@ void loop(){
             movepecaTFT('_',i);   
           }
       }
-      Serial.println("botao1= "+ String(push1Read()));
-      Serial.println("botao2= "+ String(push2Read()));
       state=0;
       delay(1000);
       break;

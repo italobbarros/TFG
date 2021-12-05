@@ -28,9 +28,6 @@ void GetBoardbegin(void){
     encoderInit(pinCLK, pinDT);
     pinMode(pinSW,INPUT_PULLUP);
 
-    //configura os pinos dos botões
-    pinMode(pinPUSH1,INPUT);
-    pinMode(pinPUSH2,INPUT);
 
     
     //configura o pino do buzzer	

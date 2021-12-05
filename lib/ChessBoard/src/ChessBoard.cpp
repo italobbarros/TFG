@@ -27,6 +27,7 @@ static bool referencia[64]={
   1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
   1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 };
 int tempo = millis();
+static bool boardAuxNow[64];
 static bool boardLast[64];
 static int boardComp[64];
 static bool comeB[64],moveB[64];
@@ -47,21 +48,29 @@ char chessBoard[65]={
         
 int SW1Last,SW1Atual=1;
 int SW2Last,SW2Atual=1;
-bool vez=0;// a branca começa
-int aux1=0,aux=0,chegou,saiu=65,rodada=1; // rodada começa em 1
-int saiuAntSave=66;
-int y=0;
+bool vez;// a branca começa
+int aux1,aux,chegou,saiu,rodada; // rodada começa em 1
+int saiuAntSave;
+int y,t,pos1;
 
 
 
 bool chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posição inicial
+    vez=0;
+    aux1=0,aux=0,chegou,saiu=65,rodada=1; // rodada começa em 1
+    saiuAntSave=66,pos1=66;
+    y=0;t=0;
+    SW1Last = push1Read();
+    SW2Last = push2Read();
+
     if(checkBoard()==SUCESS){
         for(int i=0;i<64;i++){
             movepecaTFT(chessBoard[i],i); 
+            boardLast[i] = boardNow[i];
         }
         return SUCESS;
     }else{
-        textErrorTFT("Error na Inicialização!",heightTFT/2,widthTFT/2); //irá printar na tela do dispositivo uma imagem de error
+        textErrorTFT("Error na Inicialização!",heightTFT/2 + 10,widthTFT/2); //irá printar na tela do dispositivo uma imagem de error
         return FAILED;
     }
 
@@ -80,77 +89,75 @@ bool checkBoard(void){
             Serial.println("Error na inicialização!");
             return FAILED;
         }
-
     } 
     return SUCESS;
 }
 void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
-    SW1Last = SW1Atual;
-    SW2Last = SW2Atual;
-    for(int i=0;i<64;i++){
-        boardLast[i] = boardNow[i];
-    }
-    if((millis()- tempo) >200){
-        SW1Atual = push1Read();
-        SW2Atual = push2Read();
-        tempo = millis();
-    }
-
     boardMapping();//atualiza a aquisição
     for(int i=0;i<64;i++){
         getBoard(&boardNow[i],i); //pega a matriz da aquisição
         if((boardLast[i]- boardNow[i])==1){//retirou a peça
             saiu = i; //posição da peça retirada
             jogando = true; // flag para marcar que uma peça foi retirada do tabuleiro
+            t +=1;
         }
-        boardLast[i] = boardNow[i];
-    } 
-    //descomentar essa parte de cima depois
-    if(vez==BRANCAS){ //vez das brancas
-        //boardNow[jogo[y]] = 0;
-        if(SW1Atual != SW1Last){
-            //boardNow[jogo[y+1]] = 1;
-            if(moveChess()==SUCESS){
-                #if DEBUG 
-                    Serial.println("Brancas");
-                    Serial.println("Rodada:"+String(rodada));
-                    Serial.println("peca:"+String(chessBoard[chegou])+" da posição "+String(saiu));
-                #endif
-                vez = PRETAS;
-                jogando = false;
-                Serial.println("chegou = "+String(chegou));
-                createPGN(saiu,chegou,BRANCAS);
-                Serial.println("PGN= "+ PGN);
-            }
-            else{
-                Serial.println("ERROR no movimento");
-            }
-        }   
     }
-    else if(vez==PRETAS){ //vez das pretas
-        //boardNow[jogo[y+2]] = 0;
-        if(SW2Atual != SW2Last){
-            //boardNow[jogo[y+3]] = 1;
-            if(moveChess()==SUCESS){
-                #if DEBUG 
-                    Serial.println("Pretas");
-                    Serial.println("peca:"+String(chessBoard[chegou])+" da posição "+String(saiu));
-                #endif
-                y=y+4;
-                vez = BRANCAS;
-                jogando = false;
-                rodada++;
-                createPGN(saiu,chegou,PRETAS);
-            }else{
-                Serial.println("ERROR no movimento");
+    if(jogando==true){
+        if(t==1){
+            for(int i=0;i<64;i++){
+                boardLast[i] = boardNow[i];
             }
-            Serial.println("PGN = "+ PGN);
-        }  
+            t=0;
+        } 
+        //descomentar essa parte de cima depois
+        if(vez==BRANCAS){ //vez das brancas
+            if(push1Read() != SW1Last){
+                if(moveChess()==SUCESS){
+                    #if DEBUG 
+                        Serial.println("Brancas");
+                        Serial.println("Rodada:"+String(rodada));
+                        Serial.println("peca:"+String(chessBoard[chegou])+" da posição "+String(saiu));
+                    #endif
+                    vez = PRETAS;
+                    jogando = false;
+                    Serial.println("chegou = "+String(chegou));
+                    createPGN(saiu,chegou,BRANCAS);
+                    Serial.println("PGN= "+ PGN);
+                }
+                else{
+                    Serial.println("ERROR no movimento");
+                }
+                SW1Last = push1Read();
+            }   
+        }
+        else if(vez==PRETAS){ //vez das pretas
+            //boardNow[jogo[y+2]] = 0;
+            if(push2Read() != SW2Last){
+                //boardNow[jogo[y+3]] = 1;
+                if(moveChess()==SUCESS){
+                    #if DEBUG 
+                        Serial.println("Pretas");
+                        Serial.println("peca:"+String(chessBoard[chegou])+" da posição "+String(saiu));
+                    #endif
+                    y=y+4;
+                    vez = BRANCAS;
+                    jogando = false;
+                    rodada++;
+                    createPGN(saiu,chegou,PRETAS);
+                }else{
+                    Serial.println("ERROR no movimento");
+                }
+                Serial.println("PGN = "+ PGN);
+                SW2Last = push2Read();
+            }  
+        }
+        if(auxilio){
+            auxilioJogo(); //função que da as sugestoes de vezs
+        }
+        
+         
     }
-    if(auxilio){
-        auxilioJogo(); //função que da as sugestoes de vezs
-    }
-    
+       
     
 }
 void getChess(char *parameter, int i){
@@ -220,17 +227,14 @@ void createPGN(int casaAnt,int casa,bool tipo){
         }
         else{
             //para a casa que ta saindo
-            if(chessBoard[casaAnt]=='p'){
+            if(chessBoard[casa]=='p'){
                 PGN += String(rodada)+ ". " + String(colunas[z]) + String(linhas[k]) + " ";
             }else{
-                PGN += String(rodada)+ ". " + String(chessBoard[casaAnt]) + String(colunas[z]) + String(linhas[k]) + " ";
+                PGN += String(rodada)+ ". " + String(chessBoard[casa]) + String(colunas[z]) + String(linhas[k]) + " ";
             }
             //para a casa que ta chegando
-            if(chessBoard[casa]=='p'){
-                PGN += String(colunas[j]) + String(linhas[i]) + " ";
-            }else{
-                PGN += String(chessBoard[casa]) + String(colunas[j]) + String(linhas[i]) + " ";
-            }
+            PGN += String(colunas[j]) + String(linhas[i]) + " ";
+
         }
         
     }else{ //PRETAS
@@ -244,17 +248,14 @@ void createPGN(int casaAnt,int casa,bool tipo){
         }
         else{
             //para a casa que ta saindo
-            if(chessBoard[casaAnt]=='P'){
+            if(chessBoard[casa]=='P'){
                 PGN += String(colunas[z]) + String(linhas[k]) + " ";
             }else{
-                PGN += String(chessBoard[casaAnt]) + String(colunas[z]) + String(linhas[k]) + " ";
+                PGN += String(chessBoard[casa]) + String(colunas[z]) + String(linhas[k]) + " ";
             }
             //para a casa que ta chegando
-            if(chessBoard[casa]=='P'){
-                PGN += String(colunas[j]) + String(linhas[i]) + " ";
-            }else{
-                PGN += String(chessBoard[casa]) + String(colunas[j]) + String(linhas[i]) + " ";
-            }            
+            PGN += String(colunas[j]) + String(linhas[i]) + " ";
+                        
         }
     }
 
@@ -268,91 +269,107 @@ bool getFIM(void){
 }
 
 void auxilioJogo(void){
-        
-        for(int i=0;i<64;i++){
-                //getBoard(&boardNow[i],i); //pega a matrix da aquisição
-                boardComp[i]= boardNow[i] - boardLast[i];
-                if(boardComp[i] == -1){ //saiu da casa
-                    saiu = i;
-                }
-        }
     if(saiuAntSave != saiu){
-            simbolCasa(saiu,1); // faz uma marcação na casa que possui a peça que ira mover
-            #if DEBUG
-                Serial.println("chessBoard[saiu]:" + String(chessBoard[saiu]));
-            #endif
-            RegraChess(chessBoard[saiu],saiu); // atribui a regra do xadrez e salva nos vetores comeBoard e moveBoard
-               // printf("_________________________\n");
-                //Serial.printf("moveB[64]=\n");
-            for(int i=0;i<64;i++){
-                getTest(&comeB[i],&moveB[i],i); //pega os vetores da camada anterior e atribui as variaveis criadas na biblioteca                   
-                if((moveB[i]==1) & (boardNow[i]==0)){// onde ele pode movimentar e não possui peça
-                    switch(chessBoard[saiu]){
-                        case 'B': //bispo preto
-                            if((moveB[i-7]==1) & ((i-7) > 0)){
-                                moveB[i]=0;
-                            }
-                            if((moveB[i-9]==1) & ((i-9) > 0)){
-                                moveB[i]=0; 
-                            }
-                            if((moveB[i+7]==1) & ((i+7) < 64)){
-                                moveB[i]=0; 
-                            }
-                            if((moveB[i+9]==1) & ((i+9) < 64)){
-                                moveB[i]=0; 
-                            }
-                            if(moveB[i]==1){
-                                simbolCasa(i,2);
-                                moveB[i]=0; 
-                            }
-                            break;
-                        case 'P': //piao preto
-                            simbolCasa(i,2);
-                            moveB[i]=0; 
-                            break;
-                        default:
-                            simbolCasa(i,2);
-                            moveB[i]=0;
-                            break;
-                    }
-                        
-                }else if((comeB[i]==1) & (boardNow[i]==1)){//onde ele pode comer e possui peça
-
-                }
-            }
-            saiuAntSave = saiu;
-        }
+        simbolCasa(saiu, 1); // faz uma marcação na casa que possui a peça que ira mover
+        #if DEBUG
+        Serial.println("chessBoard[saiu]:" + String(chessBoard[saiu]));
+        #endif
+        RegraChess(chessBoard[saiu], saiu); // atribui a regra do xadrez e salva nos vetores comeBoard e moveBoard
+                                            // printf("_________________________\n");
+                                            // Serial.printf("moveB[64]=\n");
+        testeXadrez();
+        saiuAntSave = saiu;
+    }
     
-
-}
-
-char moveChess(void){
-    aux=0;
-        for(int i=0;i<64;i++){
-            //getBoard(&boardNow[i],i); //pega a matrix da aquisição
-            boardComp[i]= boardNow[i] - boardLast[i];
-            if(boardComp[i] == 1){ //chegou na casa
-                chegou = i;
-                aux =1;
+    //auxilio para a casa que foi movimentada mas que nao tem peça
+    boardMapping();
+    for(int i=0;i<64;i++){
+        getBoard(&boardAuxNow[i],i); //pega a matrix da aquisição
+        if(pos1 != i){
+            if((boardAuxNow[i] - boardLast[i]) == 1){ //saiu da casa
+                setaCasa(pos1,casabranca,casapreta);
+                testeXadrez();
+                simbolCasa(i, 4);
+                pos1 = i;
             }
-        }   
-        if(aux==1){ //caso para movimento simples
-            movepeca(saiu,chegou); // movimenta a matriz
-            
         }
-        printf("_________________________\n");
-        printf("chessBoard[64]=\n");
-        for (int i = 0; i < 64; i++){
-            movepecaTFT(chessBoard[i],i);
-            //serial
-            printf("%c ,",chessBoard[i]);
-                if((i+1)%8==0){
-                printf("\n");
-                }
-        }
-       return SUCESS;
+    }
+
 }
 
+void testeXadrez(void){
+    for (int i = 0; i < 64; i++){
+            getTest(&comeB[i], &moveB[i], i); // pega os vetores da camada anterior e atribui as variaveis criadas na biblioteca
+            if ((moveB[i] == 1) & (boardNow[i] == 0)){ // onde ele pode movimentar e não possui peça
+                switch (chessBoard[saiu])
+                {
+                case 'B': // bispo preto
+                    if ((moveB[i - 7] == 1) & ((i - 7) > 0))
+                    {
+                        moveB[i] = 0;
+                    }
+                    if ((moveB[i - 9] == 1) & ((i - 9) > 0))
+                    {
+                        moveB[i] = 0;
+                    }
+                    if ((moveB[i + 7] == 1) & ((i + 7) < 64))
+                    {
+                        moveB[i] = 0;
+                    }
+                    if ((moveB[i + 9] == 1) & ((i + 9) < 64))
+                    {
+                        moveB[i] = 0;
+                    }
+                    if (moveB[i] == 1)
+                    {
+                        simbolCasa(i, 2);
+                        moveB[i] = 0;
+                    }
+                    break;
+                case 'P': // piao preto
+                    simbolCasa(i, 2);
+                    moveB[i] = 0;
+                    break;
+                default:
+                    simbolCasa(i, 2);
+                    moveB[i] = 0;
+                    break;
+                }
+            }
+            else if ((comeB[i] == 1) & (boardNow[i] == 1))
+            { // onde ele pode comer e possui peça
+            }
+        }
+}
+
+
+char moveChess(void)
+{
+    aux = 0;
+    boardMapping(); // atualiza a aquisição
+    for (int i = 0; i < 64; i++){
+        getBoard(&boardNow[i], i); // pega a matrix da aquisição
+        boardComp[i] = boardNow[i] - boardLast[i];
+        if (boardComp[i] == 1){ // chegou na casa
+            chegou = i;
+            aux = 1;
+        }
+    }
+    if (aux == 1){                           // caso para movimento simples
+        movepeca(saiu, chegou); // movimenta a matriz
+    }
+    printf("_________________________\n");
+    printf("chessBoard[64]=\n");
+    for (int i = 0; i < 64; i++){
+        movepecaTFT(chessBoard[i], i);
+        //serial
+        printf("%c ,", chessBoard[i]);
+        if ((i + 1) % 8 == 0){
+            printf("\n");
+        }
+    }
+    return SUCESS;
+}
 
 //Parte de teste para desenvolver o pgn 
 //      |

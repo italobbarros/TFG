@@ -146,6 +146,23 @@ void simbolCasa(int casa,int tipo){
             tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1-4, TFT_RED);
           }
         }
+      }else if(tipo==4){ // posição para a qual vai ser movimentado
+        if((i%2)){
+          if (j % 2){
+            tft.fillCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth, raio, TFT_GREEN);
+          }
+          else{
+            tft.fillCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth, raio, TFT_GREEN);
+          }
+        }
+        else{
+          if (j % 2){
+            tft.fillCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth, raio, TFT_GREEN);
+          }
+          else{
+            tft.fillCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth, raio, TFT_GREEN);
+          }
+        }
       }   
       
 }
