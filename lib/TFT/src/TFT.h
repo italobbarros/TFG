@@ -53,8 +53,9 @@ void movepecaTFT(char peca,int casaAtual);
 void tftbegin(void);
 void fbPlayerTFT(int x, int y);
 void textTFT(const char *stringAtual,int x, int y,Cor tipo);
-void printTextTFT1(const char *stringAtual,int x, int y);
+void printTextTFT1(const char *stringAtual,int x, int y,String datum);
 void printTextTFT2(const char *stringAtual,const char *stringAnterior,int x, int y);
+
 
 void tftTest(void);
 void fpsView(void);

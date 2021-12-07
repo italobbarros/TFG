@@ -7,7 +7,7 @@
 #define casaWidth 30
 #define casaHeight 30
 #define offsetX 0
-#define offsetY 40
+#define offsetY 45
 #define raio 5
 #define raio1 19
 

@@ -89,7 +89,7 @@ switch (val){
 void loop(){
   //movepecaTFT(randomChess(random(0,12)),random(0,64)); 
   //tftTest();
-  fpsView();
+  //fpsView();
   switch (state){
     case 0:
       if(chessBoardBegin()==SUCESS){
@@ -105,10 +105,11 @@ void loop(){
       AtualizaChessBoard();
       AtualizaButton1();
       AtualizaButton2();
-      if(getFim()){
-        sendPGN();
+      if(getFim() || timeOut()){
+        StopTime();
         Serial.println("Enviando PGN!");
-        textTFT("Enviando PGN!",heightTFT/2 + 20,widthTFT/2,Good);
+        textTFT("Enviando PGN!",heightTFT/2,widthTFT/2,Good);
+        sendPGN();
         delay(5000);
         ESP.restart();
       }

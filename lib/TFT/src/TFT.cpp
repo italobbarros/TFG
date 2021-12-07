@@ -4,7 +4,7 @@
     unsigned long fpsTime;
     int fps;
 
-TFT_eSPI tft = TFT_eSPI(); 
+  TFT_eSPI tft = TFT_eSPI(); 
 
 
 void tftbegin(void){
@@ -282,12 +282,17 @@ void textTFT(const char *stringAtual,int x, int y,Cor tipo){
 
 }
 
-void printTextTFT1(const char *stringAtual,int x, int y){
-  tft.fillRoundRect(0,y-35,320,100,20,TFT_BLACK);
-  tft.setTextSize(1);
-  tft.setTextColor(TFT_WHITE,TFT_BLACK);
-  tft.setTextDatum(TC_DATUM);
-  tft.drawString(stringAtual, x, y, 4);
+
+
+void printTextTFT1(const char *Texto,int x, int y,String datum){
+  tft.setTextSize(2);
+  tft.setTextColor(TFT_GOLD,TFT_DARKCYAN);
+  if(datum=="Top"){
+    tft.setTextDatum(TC_DATUM);
+  }else{
+    tft.setTextDatum(BC_DATUM);
+  }
+  tft.drawString(Texto, x, y, 2);
 }
 
 void printTextTFT2(const char *stringAtual,const char *stringAnterior,int x, int y){

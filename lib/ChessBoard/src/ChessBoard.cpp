@@ -51,14 +51,21 @@ bool vez;// a branca começa
 int aux1,aux,chegou,saiu,rodada; // rodada começa em 1
 int saiuAntSave;
 int y,t,pos1;
-
-
+int s1,s2,m1,m2;
+bool stopTime;
+unsigned long timePlay1,timePlay2;
+  #define tempOriginal 15
 
 bool chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posição inicial
-    vez=0;PGN="";
+    vez=0;PGN="pgn=";
     aux1=0,aux=0,chegou,saiu=65,rodada=1; // rodada começa em 1
     saiuAntSave=66,pos1=66;
     y=0;t=0;
+
+    stopTime=0;
+    timePlay1=0;timePlay2=0;
+    m1=tempOriginal,m2=tempOriginal;
+
     SW1Last = push1Read();
     SW2Last = push2Read();
     if(checkBoard()==SUCESS){
@@ -68,7 +75,7 @@ bool chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posi
         }
         return SUCESS;
     }else{
-        textTFT("Error na Inicialização!",heightTFT/2 + 10,widthTFT/2,Error); //irá printar na tela do dispositivo uma imagem de error
+        textTFT("Error na Inicialização!",heightTFT/2+10,widthTFT/2,Error); //irá printar na tela do dispositivo uma imagem de error
         return FAILED;
     }
 
@@ -106,7 +113,7 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
                 boardLast[i] = boardNow[i];
             }
             t=0;
-        } 
+        }
         //descomentar essa parte de cima depois
         if(vez==BRANCAS){ //vez das brancas
             if(!push1Read()){
@@ -125,13 +132,10 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
                 else{
                     Serial.println("ERROR no movimento");
                 }
-                //SW1Last = push1Read();
             }   
         }
         else if(vez==PRETAS){ //vez das pretas
-            //boardNow[jogo[y+2]] = 0;
             if(!push2Read()){
-                //boardNow[jogo[y+3]] = 1;
                 if(moveChess()==SUCESS){
                     #if DEBUG 
                         Serial.println("Pretas");
@@ -155,6 +159,15 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
         
          
     }
+    
+    if(vez==BRANCAS){
+        printTextTFT1((tempoBrancas(vez)).c_str(),heightTFT/2,widthTFT,"Bot");//valor dinamico do tempo das brancas
+        printTextTFT1((getTempo(PRETAS)).c_str(),heightTFT/2,offsetY/4,"Top");//valor estatico do tempo das pretas
+    }else{
+        printTextTFT1((tempoPretas(vez)).c_str(),heightTFT/2,offsetY/4,"Top");//valor dinamico do tempo das pretas
+        printTextTFT1((getTempo(BRANCAS)).c_str(),heightTFT/2,widthTFT,"Bot"); //valor estatico do tempo das brancas
+    }
+    
        
     
 }
@@ -258,6 +271,94 @@ void createPGN(int casaAnt,int casa,bool tipo){
     }
 
 }
+
+String getTempo(bool tipo){
+  if(tipo==0){
+    if(s1<10 && m1<10){
+        return ("0"+String(m1)+ ":0" + String(s1)); 
+    }
+    else if(m1<10){
+        return ("0"+String(m1)+ ":" + String(s1)); 
+    }
+    else if(s1<10){
+        return (String(m1)+ ":0" + String(s1)); 
+    }
+    else{
+        return (String(m1)+ ":" + String(s1));
+    }
+  }else{
+    if(s2<10 && m2<10){
+        return ("0"+String(m2)+ ":0" + String(s2)); 
+    }
+    else if(m2<10){
+        return ("0"+String(m2)+ ":" + String(s2)); 
+    }
+    else if(s2<10){
+        return (String(m2)+ ":0" + String(s2)); 
+    }
+    else{
+        return (String(m2)+ ":" + String(s2));
+    }
+  }
+}
+
+void StopTime(void){
+  stopTime = 1;
+}
+
+bool timeOut(void){
+    if((s1==0) && (m1==0)){
+        return 1;
+    }else if((s2==0) && (m2==0)){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+String tempoBrancas(bool vez){
+  if(vez==0 && (!stopTime)){
+    if(millis() - timePlay1 >= 1000){
+        if(m1 == tempOriginal){
+            m1 = m1 - 1;
+            s1=59;
+        }
+        else if(m1>0 && s1==0){
+            m1 = m1 - 1;
+            s1=59;    
+        }else if(m1>=0 && s1>0){
+            s1--;
+        }
+        timePlay1=millis();       
+    }
+  }else{
+    timePlay1=millis();
+  }
+  return getTempo(0);
+  
+}
+
+String tempoPretas(bool vez){
+    if(vez==1 && (!stopTime)){
+        if(millis() - timePlay2>=1000){
+            if(m2 == tempOriginal){
+                m2 = m2 - 1;
+                s2=59;
+            }
+            else if(m2>0 && s2==0){
+                m2 = m2 - 1;
+                s2=59;    
+            }else if(m2>=0 && s2>0){
+                s2--;
+            }
+            timePlay2=millis();      
+        }
+    }
+    else{
+        timePlay2=millis();
+    }
+    return getTempo(1);
+}
+
 
 String getPGN(void){
     return PGN;

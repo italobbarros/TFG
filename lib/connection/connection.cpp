@@ -15,7 +15,7 @@ const char* serverName = "https://lichess.org/api/import";
 String apiKey = "318651";              //Add your Token number that bot has sent you on WhatsApp messenger
 String phone_number = "+553599082130"; //Add your WhatsApp app registered phone number (same number that bot send you in url)
 
-String url;                            //url String will be used to store the final generated URL
+String url="";                            //url String will be used to store the final generated URL
 
 String urlencode(String str)  // Function used for encoding the url
 {
@@ -51,7 +51,7 @@ String urlencode(String str)  // Function used for encoding the url
     return encodedString;
 }
 
-void postData()     //userDefine function used to call api(POST data)
+void postData(String url)     //userDefine function used to call api(POST data)
 {
   int httpCode;     // variable used to get the responce http code after calling api
   HTTPClient http;  // Declare object of class HTTPClient
@@ -73,7 +73,7 @@ void  message_to_whatsapp(String message)       // user define function to send 
   //adding all number, your api key, your message into one complete url
   url = "https://api.callmebot.com/whatsapp.php?phone=" + phone_number + "&apikey=" + apiKey + "&text=" + urlencode(message);
 
-  postData(); // calling postData to run the above-generated url once so that you will receive a message.
+  postData(url); // calling postData to run the above-generated url once so that you will receive a message.
 }
 
 void connectWiFI()
@@ -106,7 +106,6 @@ void sendPGN(){
       Serial.println(response);           //Print request answer
       message_to_whatsapp(url);
     }
-
   else{
     Serial.print("Error on sending POST: ");
     Serial.println(httpResponseCode);

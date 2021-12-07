@@ -29,6 +29,9 @@ void auxilioJogo(void);
 void tiraPeca(int PosInicial);
 String getPGN(void);
 
-
-
+String tempoPretas(bool vez);
+String tempoBrancas(bool vez);
+void StopTime(void);
+String getTempo(bool tipo);
+bool timeOut(void);
 #endif /*CHESSBOARD_H*/
