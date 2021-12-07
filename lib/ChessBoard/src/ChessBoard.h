@@ -28,7 +28,6 @@ char moveChess(void);
 void auxilioJogo(void);
 void tiraPeca(int PosInicial);
 String getPGN(void);
-bool getFIM(void);
 
 
 

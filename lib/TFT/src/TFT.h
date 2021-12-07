@@ -15,6 +15,12 @@
     #include "pecas2.h"
 #endif
 
+enum Cor{
+    Error =1,
+    Warning=2,
+    Good=3
+}; 
+
 /**
  * @param casaWidth valor da largura da casa
  * @param casaHeight valor da altura da casa
@@ -46,8 +52,10 @@ void simbolCasa(int casa,int tipo);
 void movepecaTFT(char peca,int casaAtual);
 void tftbegin(void);
 void fbPlayerTFT(int x, int y);
-void textErrorTFT(const char *stringAtual,int x, int y);
+void textTFT(const char *stringAtual,int x, int y,Cor tipo);
 void printTextTFT1(const char *stringAtual,int x, int y);
 void printTextTFT2(const char *stringAtual,const char *stringAnterior,int x, int y);
 
+void tftTest(void);
+void fpsView(void);
 #endif /*TFT_H*/

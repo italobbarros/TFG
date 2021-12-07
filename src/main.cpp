@@ -10,10 +10,10 @@
 
 
 static bool boardNow[64];
-char chessB[65];
 int temp=millis();;
 int state=0,encAnt=0,SwAnt,SwAtual;
 int val=1;
+
 
 
 void setup(){
@@ -31,7 +31,65 @@ void setup(){
   }
 
 }
+
+char randomChess(int val){
+switch (val){
+    default:
+      return '_';
+      break;
+    //branco
+    case 1: //piao p
+      return 'p';
+          break;
+    case 2: //bispo
+      return 'b';
+
+      break;
+    case 3: //rook
+      return 'r';
+
+      break;
+    case 4: //rainha
+      return 'q';
+
+      break;  
+    case 5: //king
+    return 'k';
+        break;
+
+    case 6://cavalo 
+      return 'n';
+      break;
+    
+    //preto  
+    case 7: //piao P
+      return 'P';
+        break;
+    case 8: //bispo
+      return 'B';
+          break;
+    case 9: //rook
+      return 'R';
+          break;
+    case 10: //rainha
+      return 'Q';
+
+      break;  
+    case 11: //king
+      return 'K';
+      
+      break;
+    case 12://cavalo 
+      return 'N';
+      break; 
+  }
+}
+
+
 void loop(){
+  //movepecaTFT(randomChess(random(0,12)),random(0,64)); 
+  //tftTest();
+  fpsView();
   switch (state){
     case 0:
       if(chessBoardBegin()==SUCESS){
@@ -45,8 +103,14 @@ void loop(){
       break;
     case 1:
       AtualizaChessBoard();
-      if(getFIM()){
-        //sendPGN();
+      AtualizaButton1();
+      AtualizaButton2();
+      if(getFim()){
+        sendPGN();
+        Serial.println("Enviando PGN!");
+        textTFT("Enviando PGN!",heightTFT/2 + 20,widthTFT/2,Good);
+        delay(5000);
+        ESP.restart();
       }
       break;
 
@@ -64,7 +128,6 @@ void loop(){
       delay(1000);
       break;
   }
-
 }
 
 

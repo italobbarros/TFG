@@ -87,27 +87,25 @@ void connectWiFI()
   Serial.println("Connected to the WiFi network");
 }
 
-void sendPGN() 
-{
+void sendPGN(){
   if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
   
     HTTPClient http;   
   
     http.begin(serverName);  //Specify destination for HTTP request
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");             //Specify content-type header
-  
-    int httpResponseCode = http.POST(getPGN());//Send the actual POST request
-  
-  if(httpResponseCode>0){
-  
-    String response = http.getString();  //Get the response to the request
-    deserializeJson(doc,response);
-    const char* url = doc["url"];
-    Serial.println(url);
-    Serial.println(httpResponseCode);   //Print return code
-    Serial.println(response);           //Print request answer
-    message_to_whatsapp(url);
-  }
+    String msg = getPGN();
+    Serial.println(msg);
+    int httpResponseCode = http.POST(msg);//Send the actual POST request
+    if(httpResponseCode>0){
+      String response = http.getString();  //Get the response to the request
+      deserializeJson(doc,response);
+      const char* url = doc["url"];
+      Serial.println(url);
+      Serial.println(httpResponseCode);   //Print return code
+      Serial.println(response);           //Print request answer
+      message_to_whatsapp(url);
+    }
 
   else{
     Serial.print("Error on sending POST: ");

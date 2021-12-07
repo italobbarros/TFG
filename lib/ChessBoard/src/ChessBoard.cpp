@@ -32,8 +32,7 @@ static bool boardLast[64];
 static int boardComp[64];
 static bool comeB[64],moveB[64];
 
-bool FIM =false,acabou=false;
-String PGN="";
+String PGN;
 
 bool auxilio=true,jogando=false,rock=false,ROCK=false;
 char chessBoard[65]={
@@ -56,13 +55,12 @@ int y,t,pos1;
 
 
 bool chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posição inicial
-    vez=0;
+    vez=0;PGN="";
     aux1=0,aux=0,chegou,saiu=65,rodada=1; // rodada começa em 1
     saiuAntSave=66,pos1=66;
     y=0;t=0;
     SW1Last = push1Read();
     SW2Last = push2Read();
-
     if(checkBoard()==SUCESS){
         for(int i=0;i<64;i++){
             movepecaTFT(chessBoard[i],i); 
@@ -70,7 +68,7 @@ bool chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posi
         }
         return SUCESS;
     }else{
-        textErrorTFT("Error na Inicialização!",heightTFT/2 + 10,widthTFT/2); //irá printar na tela do dispositivo uma imagem de error
+        textTFT("Error na Inicialização!",heightTFT/2 + 10,widthTFT/2,Error); //irá printar na tela do dispositivo uma imagem de error
         return FAILED;
     }
 
@@ -111,7 +109,7 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
         } 
         //descomentar essa parte de cima depois
         if(vez==BRANCAS){ //vez das brancas
-            if(push1Read() != SW1Last){
+            if(!push1Read()){
                 if(moveChess()==SUCESS){
                     #if DEBUG 
                         Serial.println("Brancas");
@@ -127,12 +125,12 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
                 else{
                     Serial.println("ERROR no movimento");
                 }
-                SW1Last = push1Read();
+                //SW1Last = push1Read();
             }   
         }
         else if(vez==PRETAS){ //vez das pretas
             //boardNow[jogo[y+2]] = 0;
-            if(push2Read() != SW2Last){
+            if(!push2Read()){
                 //boardNow[jogo[y+3]] = 1;
                 if(moveChess()==SUCESS){
                     #if DEBUG 
@@ -148,7 +146,7 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
                     Serial.println("ERROR no movimento");
                 }
                 Serial.println("PGN = "+ PGN);
-                SW2Last = push2Read();
+                //SW2Last = push2Read();
             }  
         }
         if(auxilio){
@@ -260,13 +258,12 @@ void createPGN(int casaAnt,int casa,bool tipo){
     }
 
 }
+
 String getPGN(void){
     return PGN;
 }
 
-bool getFIM(void){
-    return getFim();
-}
+
 
 void auxilioJogo(void){
     if(saiuAntSave != saiu){
@@ -287,8 +284,6 @@ void auxilioJogo(void){
         getBoard(&boardAuxNow[i],i); //pega a matrix da aquisição
         if(pos1 != i){
             if((boardAuxNow[i] - boardLast[i]) == 1){ //saiu da casa
-                setaCasa(pos1,casabranca,casapreta);
-                testeXadrez();
                 simbolCasa(i, 4);
                 pos1 = i;
             }
@@ -343,8 +338,7 @@ void testeXadrez(void){
 }
 
 
-char moveChess(void)
-{
+char moveChess(void){
     aux = 0;
     boardMapping(); // atualiza a aquisição
     for (int i = 0; i < 64; i++){

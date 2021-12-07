@@ -1,12 +1,15 @@
 #include "TFT.h"
 #include "TFT_eSPI.h"
 
-
+    unsigned long fpsTime;
+    int fps;
 
 TFT_eSPI tft = TFT_eSPI(); 
 
+
 void tftbegin(void){
     tft.init();
+    fps=0;fpsTime=0;
     tft.setRotation(rotationTFT);	// landscape
     tft.fillScreen(TFT_WHITE);
     tft.setSwapBytes(true);
@@ -213,6 +216,36 @@ void movepecaTFT(char peca,int casaAtual){
   }
 }
 
+void tftTest(void){
+    for(int i=0;i<8;i++){   //linha
+        for(int j=0;j<8;j++){ //coluna
+            if((i%2)){
+                if(j%2){
+                tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, casabranca);
+                }else{
+                tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, casapreta);
+                }
+            }else{
+                if(j%2){
+                tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, casapreta);
+                }else{
+                tft.pushImage(offsetX+j*casaWidth, offsetY+i*casaHeight, casaWidth, casaHeight, casabranca);  
+                }
+            }
+        }
+    }
+}
+
+void fpsView(void){
+  fps++;
+  if(millis() - fpsTime>=1000){
+    tft.setTextColor(TFT_RED,TFT_BLACK);
+    tft.setTextDatum(TC_DATUM);
+    tft.drawString("FPS: "+String(fps), 60, 20, 4);
+    fps=0;fpsTime=millis();
+  } 
+}
+
 void auxTFT(int casaAtual,int casaSetada){
   simbolCasa(casaAtual,0);
 
@@ -225,11 +258,28 @@ void fbPlayerTFT(int x, int y){
   tft.setTextPadding(0); // Setting to zero switches off padding
   tft.drawString("Jogo rapido", x, y, 4);
 }
-void textErrorTFT(const char *stringAtual,int x, int y){
+void textTFT(const char *stringAtual,int x, int y,Cor tipo){
   tft.setTextSize(1);
-  tft.setTextColor(TFT_RED,TFT_BLACK);
-  tft.setTextDatum(CC_DATUM);
-  tft.drawString(stringAtual, x, y, 4);
+  switch (tipo){
+  case Error:
+    tft.setTextColor(TFT_RED,TFT_BLACK);
+    tft.setTextDatum(CC_DATUM);
+    tft.drawString(stringAtual, x, y, 4);
+    break;
+  case Warning:
+    tft.setTextColor(TFT_ORANGE,TFT_BLACK);
+    tft.setTextDatum(CC_DATUM);
+    tft.drawString(stringAtual, x, y, 4);
+    break;
+  case Good:
+    tft.setTextColor(TFT_GREEN,TFT_BLACK);
+    tft.setTextDatum(CC_DATUM);
+    tft.drawString(stringAtual, x, y, 4);
+    break;   
+  default:
+    break;
+  }
+
 }
 
 void printTextTFT1(const char *stringAtual,int x, int y){
