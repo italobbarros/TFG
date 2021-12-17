@@ -1,7 +1,13 @@
 #ifndef CHESSBOARD_H
 #define CHESSBOARD_H
 #include <Arduino.h>
-#include <config.h>
+#include "config.h"
+
+enum peca{
+    BRANCAS=0,
+    PRETAS=1
+};
+
 
 bool chessBoardBegin(void); //Inicialização do tabuleiro com as peças na posição inicial
 
@@ -20,7 +26,9 @@ void getChess(char *parameter, int i);
  */
 bool checkBoard(void);
 void AtualizaChessBoard(void);
-void testeXadrez(void);
+void excluiMovDiagonal(int k, int saiu, int i);
+void excluiMovHorVertical(int k, int saiu, int i);
+void testeMovimento(char peca,int saiu,int i);
 void createPGN(int casaAnt,int casa,bool tipo);
 void movBoard(int PosInicial, int PosFinal);
 void movepeca(int PosInicial, int PosFinal);
@@ -28,6 +36,8 @@ char moveChess(void);
 void auxilioJogo(void);
 void tiraPeca(int PosInicial);
 String getPGN(void);
+
+void pecaNaFrente(peca tipo);
 
 String tempoPretas(bool vez);
 String tempoBrancas(bool vez);

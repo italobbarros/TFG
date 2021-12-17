@@ -3,13 +3,14 @@
 
     unsigned long fpsTime;
     int fps;
-
+    bool vezAnt;
   TFT_eSPI tft = TFT_eSPI(); 
 
 
 void tftbegin(void){
     tft.init();
     fps=0;fpsTime=0;
+    vezAnt=1;
     tft.setRotation(rotationTFT);	// landscape
     tft.fillScreen(TFT_WHITE);
     tft.setSwapBytes(true);
@@ -130,23 +131,23 @@ void simbolCasa(int casa,int tipo){
       }else if(tipo==3){ // posição para a qual vai atacar
         if((i%2)){
           if (j % 2){
-            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1, TFT_RED);
-            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1-4, TFT_RED);
+            tft.drawLine(offsetX+(j*casaWidth),offsetY+ i*casaWidth,offsetX+casaWidth+(j*casaWidth),offsetY+casaWidth+ i*casaWidth,TFT_RED);
+            tft.drawLine(offsetX+(j*casaWidth),offsetY+casaWidth+ i*casaWidth,offsetX+casaWidth+(j*casaWidth),offsetY+ i*casaWidth,TFT_RED);
           }
           else{
-            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1, TFT_RED);
-            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1-4, TFT_RED);
+            tft.drawLine(offsetX+(j*casaWidth),offsetY+ i*casaWidth,offsetX+casaWidth+(j*casaWidth),offsetY+casaWidth+ i*casaWidth,TFT_RED);
+            tft.drawLine(offsetX+(j*casaWidth),offsetY+casaWidth+ i*casaWidth,offsetX+casaWidth+(j*casaWidth),offsetY+ i*casaWidth,TFT_RED);
           }
         }
         else{
           if (j % 2){
-            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1, TFT_RED);
-            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1-4, TFT_RED);
+            tft.drawLine(offsetX+(j*casaWidth),offsetY+ i*casaWidth,offsetX+casaWidth+(j*casaWidth),offsetY+casaWidth+ i*casaWidth,TFT_RED);
+            tft.drawLine(offsetX+(j*casaWidth),offsetY+casaWidth+ i*casaWidth,offsetX+casaWidth+(j*casaWidth),offsetY+ i*casaWidth,TFT_RED);
 
           }
           else{
-            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1, TFT_RED);
-            tft.drawCircle(offsetX+(casaWidth/2)+(j*casaWidth), offsetY+(casaWidth/2)+ i*casaWidth,raio1-4, TFT_RED);
+            tft.drawLine(offsetX+(j*casaWidth),offsetY+ i*casaWidth,offsetX+casaWidth+(j*casaWidth),offsetY+casaWidth+ i*casaWidth,TFT_RED);
+            tft.drawLine(offsetX+(j*casaWidth),offsetY+casaWidth+ i*casaWidth,offsetX+casaWidth+(j*casaWidth),offsetY+ i*casaWidth,TFT_RED);
           }
         }
       }else if(tipo==4){ // posição para a qual vai ser movimentado
@@ -284,13 +285,24 @@ void textTFT(const char *stringAtual,int x, int y,Cor tipo){
 
 
 
-void printTextTFT1(const char *Texto,int x, int y,String datum){
+void printTextTFT1(const char *Texto,int x, int y,bool vez,String datum){
   tft.setTextSize(2);
-  tft.setTextColor(TFT_GOLD,TFT_DARKCYAN);
+  tft.setTextColor(TFT_GOLD,TFT_BLACK);
   if(datum=="Top"){
     tft.setTextDatum(TC_DATUM);
   }else{
     tft.setTextDatum(BC_DATUM);
+  }
+  if(vezAnt != vez){
+    if(!vez){//brancas
+      tft.fillRect(offsetX,offsetY+casaWidth*8,offsetX+casaWidth*8,widthTFT - offsetY+casaWidth*8,TFT_GREEN);//pode jogar
+      tft.fillRect(offsetX,0,offsetX+casaWidth*8,offsetY,TFT_RED);//Não pode jogar
+    
+    }else{//pretas
+      tft.fillRect(offsetX,0,offsetX+casaWidth*8,offsetY,TFT_GREEN);//pode jogar
+      tft.fillRect(offsetX,offsetY+casaWidth*8,offsetX+casaWidth*8,widthTFT - offsetY+casaWidth*8,TFT_RED);//Não pode jogar
+    }
+    vezAnt = vez;
   }
   tft.drawString(Texto, x, y, 2);
 }

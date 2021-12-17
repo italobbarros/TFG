@@ -6,7 +6,7 @@
 #include "RegrasMove.h"
 #include "Interrupt.h"
 
-int jogo[16]={e2,e4,e7,e5,g1,f3,f8,d6,d2,d4,f7,f6,f1,c4,c7,c6};
+
 static bool boardNow[64]={
   1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
   1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
@@ -32,6 +32,7 @@ static bool boardLast[64];
 static int boardComp[64];
 static bool comeB[64],moveB[64];
 
+int indexD1,indexD2,indexD3,indexD4,indexDir,indexEsq,indexTop,indexBot;
 String PGN;
 
 bool auxilio=true,jogando=false,rock=false,ROCK=false;
@@ -47,7 +48,7 @@ char chessBoard[65]={
         
 int SW1Last,SW1Atual=1;
 int SW2Last,SW2Atual=1;
-bool vez;// a branca começa
+peca vez;// a branca começa
 int aux1,aux,chegou,saiu,rodada; // rodada começa em 1
 int saiuAntSave;
 int y,t,pos1;
@@ -57,7 +58,8 @@ unsigned long timePlay1,timePlay2;
   #define tempOriginal 15
 
 bool chessBoardBegin(void){ //Inicialização do tabuleiro com as peças na posição inicial
-    vez=0;PGN="pgn=";
+    vez = BRANCAS;
+    PGN="pgn=";
     aux1=0,aux=0,chegou,saiu=65,rodada=1; // rodada começa em 1
     saiuAntSave=66,pos1=66;
     y=0;t=0;
@@ -118,7 +120,7 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
         if(vez==BRANCAS){ //vez das brancas
             if(!push1Read()){
                 if(moveChess()==SUCESS){
-                    #if DEBUG 
+                    #if DEBUG
                         Serial.println("Brancas");
                         Serial.println("Rodada:"+String(rodada));
                         Serial.println("peca:"+String(chessBoard[chegou])+" da posição "+String(saiu));
@@ -137,11 +139,10 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
         else if(vez==PRETAS){ //vez das pretas
             if(!push2Read()){
                 if(moveChess()==SUCESS){
-                    #if DEBUG 
+                    #if DEBUG
                         Serial.println("Pretas");
                         Serial.println("peca:"+String(chessBoard[chegou])+" da posição "+String(saiu));
                     #endif
-                    y=y+4;
                     vez = BRANCAS;
                     jogando = false;
                     rodada++;
@@ -161,11 +162,11 @@ void AtualizaChessBoard(void){//retorna a matrix do tabuleiro preenchida
     }
     
     if(vez==BRANCAS){
-        printTextTFT1((tempoBrancas(vez)).c_str(),heightTFT/2,widthTFT,"Bot");//valor dinamico do tempo das brancas
-        printTextTFT1((getTempo(PRETAS)).c_str(),heightTFT/2,offsetY/4,"Top");//valor estatico do tempo das pretas
+        printTextTFT1((tempoBrancas(vez)).c_str(),heightTFT/2,widthTFT,vez,"Bot");//valor dinamico do tempo das brancas
+        printTextTFT1((getTempo(PRETAS)).c_str(),heightTFT/2,offsetY/4,vez,"Top");//valor estatico do tempo das pretas
     }else{
-        printTextTFT1((tempoPretas(vez)).c_str(),heightTFT/2,offsetY/4,"Top");//valor dinamico do tempo das pretas
-        printTextTFT1((getTempo(BRANCAS)).c_str(),heightTFT/2,widthTFT,"Bot"); //valor estatico do tempo das brancas
+        printTextTFT1((tempoPretas(vez)).c_str(),heightTFT/2,offsetY/4,vez,"Top");//valor dinamico do tempo das pretas
+        printTextTFT1((getTempo(BRANCAS)).c_str(),heightTFT/2,widthTFT,vez,"Bot"); //valor estatico do tempo das brancas
     }
     
        
@@ -375,7 +376,8 @@ void auxilioJogo(void){
         RegraChess(chessBoard[saiu], saiu); // atribui a regra do xadrez e salva nos vetores comeBoard e moveBoard
                                             // printf("_________________________\n");
                                             // Serial.printf("moveB[64]=\n");
-        testeXadrez();
+        pecaNaFrente(vez);
+        //testeXadrez();
         saiuAntSave = saiu;
     }
     
@@ -393,51 +395,252 @@ void auxilioJogo(void){
 
 }
 
-void testeXadrez(void){
-    for (int i = 0; i < 64; i++){
+void pecaNaFrente(peca tipo){
+    //indexD1=65,indexD2=65,indexD3=65,indexD4=65,indexDir=65,indexEsq=65,indexTop=65,indexBot=65;
+    if(tipo == BRANCAS){
+        for(int i=0;i<64;i++){
             getTest(&comeB[i], &moveB[i], i); // pega os vetores da camada anterior e atribui as variaveis criadas na biblioteca
-            if ((moveB[i] == 1) & (boardNow[i] == 0)){ // onde ele pode movimentar e não possui peça
-                switch (chessBoard[saiu])
-                {
-                case 'B': // bispo preto
-                    if ((moveB[i - 7] == 1) & ((i - 7) > 0))
-                    {
-                        moveB[i] = 0;
-                    }
-                    if ((moveB[i - 9] == 1) & ((i - 9) > 0))
-                    {
-                        moveB[i] = 0;
-                    }
-                    if ((moveB[i + 7] == 1) & ((i + 7) < 64))
-                    {
-                        moveB[i] = 0;
-                    }
-                    if ((moveB[i + 9] == 1) & ((i + 9) < 64))
-                    {
-                        moveB[i] = 0;
-                    }
-                    if (moveB[i] == 1)
-                    {
-                        simbolCasa(i, 2);
-                        moveB[i] = 0;
-                    }
+            if(moveB[i] == 1 || comeB[i]==1){
+                switch (chessBoard[i]){
+                    default:
+                        comeB[i]=0;
                     break;
-                case 'P': // piao preto
-                    simbolCasa(i, 2);
-                    moveB[i] = 0;
+                    //branco
+                    case 'p': //piao p
+                        moveB[i]=0;
+                        comeB[i]=0;
                     break;
-                default:
-                    simbolCasa(i, 2);
-                    moveB[i] = 0;
+                    case 'b': //bispo
+                        moveB[i]=0;
+                        comeB[i]=0;
                     break;
+                    case 'r': //rook
+                        moveB[i]=0;
+                        comeB[i]=0;
+                    break;
+                    case 'q': //rainha
+                        moveB[i]=0;
+                        comeB[i]=0;
+                    break;  
+                    case 'k': //king
+                        moveB[i]=0;
+                        comeB[i]=0;
+                    break;
+                    case 'n'://cavalo 
+                        moveB[i]=0;
+                        comeB[i]=0;
+                    break;
+
+                    //preto  
+                    case 'P': //piao P
+                        comeB[i]=1;
+                    break;
+                    case 'B': //bispo
+                        comeB[i]=1;
+                    break;
+                    case 'R': //rook
+                        comeB[i]=1;
+                    break;
+                    case 'Q': //rainha
+                        comeB[i]=1;
+                    break;  
+                    case 'K': //king
+                        comeB[i]=1;
+                    break;
+                    case 'N'://cavalo
+                        comeB[i]=1;
+                    break; 
                 }
+
+                //testeMovimento(chessBoard[saiu],saiu,index);
+                if(comeB[i]){simbolCasa(i,3);}
+                if(moveB[i]){simbolCasa(i,2);}          
             }
-            else if ((comeB[i] == 1) & (boardNow[i] == 1))
-            { // onde ele pode comer e possui peça
-            }
+
+            
         }
+
+    }else{
+        for(int i=0;i<64;i++){
+            getTest(&comeB[i], &moveB[i], i); // pega os vetores da camada anterior e atribui as variaveis criadas na biblioteca
+            if(moveB[i] == 1 || comeB[i]==1){
+                switch (chessBoard[i]){
+                    default:
+                        comeB[i]=0;
+                    break;
+                    //branco
+                    case 'p': //piao p
+                        comeB[i]=1;
+                    break;
+                    case 'b': //bispo
+                        comeB[i]=1;
+                    break;
+                    case 'r': //rook
+                        comeB[i]=1;
+                    break;
+                    case 'q': //rainha
+                        comeB[i]=1;
+                    break;  
+                    case 'k': //king
+                        comeB[i]=1;
+                    break;
+                    case 'n'://cavalo 
+                        comeB[i]=1;
+                    break;
+
+                    //preto  
+                    case 'P': //piao P
+                        moveB[i]=0;
+                        comeB[i]=0;
+                    break;
+                    case 'B': //bispo
+                        moveB[i]=0;
+                        comeB[i]=0;
+                    break;
+                    case 'R': //rook
+                        moveB[i]=0;
+                        comeB[i]=0;
+                    break;
+                    case 'Q': //rainha
+                        moveB[i]=0;
+                        comeB[i]=0;
+                    break;  
+                    case 'K': //king
+                        moveB[i]=0;
+                        comeB[i]=0;
+                    break;
+                    case 'N'://cavalo 
+                        moveB[i]=0;
+                        comeB[i]=0;
+                    break; 
+                }
+                //testeMovimento(chessBoard[saiu],saiu,&index);
+                if(comeB[i]){simbolCasa(i,3);}
+                if(moveB[i]){simbolCasa(i,2);}
+            }
+            
+        }        
+    }
+}
+/*
+void excluiMovDiagonal(int k, int saiu,int index, int* indexD1,int* indexD2,int* indexD3,int* indexD4){
+    int id1,id2,id3,id4;
+    *indexD1=id1,* indexD2=id2,*indexD3=id3,*indexD4=id4;
+    if ((((saiu - index) % 9 == 0) && (saiu - index) > 0)){
+        id1 = index;
+        if(!(testCasaBorda(id1, Left) || testCasaBorda(id1, Top)))
+        {
+            id1 = id1 - 9;
+            moveB[id1] = 0;
+        }
+    }
+    else if ((saiu - i) % 7 == 0 && (saiu - i) > 0)
+    {
+        k = i - 7;
+        moveB[k] = 0;
+        if(!(testCasaBorda(k, Right) || testCasaBorda(k, Top)))
+        {
+            k = k - 7 * i;
+            moveB[k] = 0;
+        }
+    }
+    else if ((i - saiu) % 9 == 0 && (i - saiu) > 0)
+    {
+        k = i + 9;
+        moveB[k] = 0;
+        if(!(testCasaBorda(k, Right) || testCasaBorda(k, Bottom)))
+        {
+            k = k + 9 * i;
+            moveB[k] = 0;
+        }
+    }
+    else if ((i - saiu) % 7 == 0 && (i - saiu) > 0)
+    {
+        k = i + 7;
+        moveB[k] = 0;
+        if(!(testCasaBorda(k, Left) || testCasaBorda(k, Bottom)))
+        {
+            k = k + 7 * i;
+            moveB[k] = 0;
+        }
+    }
 }
 
+void excluiMovHorVertical(int k, int saiu, int i){
+    if((saiu - i)>0 && (saiu - i)<8){ //LEFT
+        k = i - 1;
+        moveB[k] = 0;
+        if(!(testCasaBorda(k, Left)))
+        {
+            k = k - 1;
+            moveB[k] = 0;
+        }
+    }
+    if((i - saiu)>0 && (i - saiu)<8){//Right 
+        k = i + 1;
+        moveB[k] = 0;
+        if(!(testCasaBorda(k, Right)))
+        {
+            k = k + 1;
+            moveB[k] = 0;
+        }
+    } 
+    if((saiu - i)>7 && ((saiu - i)%8==0)){ //TOP
+        k = i - 8;
+        moveB[k] = 0;
+        if(!(testCasaBorda(k, Top)))
+        {
+            k = k - 8;
+            moveB[k] = 0;
+        }
+    }
+    if((i - saiu)>7 && ((saiu - i)%8==0)){ //BOTTOM
+        k = i + 8;
+        moveB[k] = 0;
+        if(!(testCasaBorda(k, Bottom)))
+        {
+            k = k + 8;
+            moveB[k] = 0;
+        }
+    }
+}
+void testeMovimento(char peca,int saiu,int i){
+    if(i!=65){
+        int k=65;
+        switch (peca){
+            default:
+
+            break;
+            case 'B': // bispo preto
+                excluiMovDiagonal(k,saiu,i);    
+                
+                break;
+            case 'R':
+                excluiMovHorVertical(k,saiu,i);
+                break;    
+            case 'Q':
+                excluiMovHorVertical(k,saiu,i);
+                excluiMovDiagonal(k,saiu,i); 
+                break;
+
+                
+            case 'b': // bispo branco
+                excluiMovDiagonal(k,saiu,i); 
+                break;
+            case 'r':
+                excluiMovHorVertical(k,saiu,i);
+                break; 
+            case 'q':
+                excluiMovHorVertical(k,saiu,i);
+                excluiMovDiagonal(k,saiu,i);                 
+                break;
+            
+        }
+               
+    }
+    
+}
+*/
 
 char moveChess(void){
     aux = 0;

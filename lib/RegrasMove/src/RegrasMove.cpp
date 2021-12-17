@@ -6,58 +6,14 @@ int mov=0;
 int comeBoard[64],moveBoard[64];
 int move2Board[8][8];
 void clearBoard(void){
-        for (int i = 0; i < 64; i++){
-            comeBoard[i]=0;
-            moveBoard[i]=0;
+  for (int i = 0; i < 64; i++){
+    comeBoard[i]=0;
+    moveBoard[i]=0;
             
-        } 
+  } 
 }
 
-void testeRegra(char peca,int casaAtual){
-  switch (peca){
-    default:
-      
-      break;
-    //branco
-    case 'p': //piao p
-      break;
-    case 'b': //bispo
-      
-      break;
-    case 'r': //rook
-      
-      break;
-    case 'q': //rainha
-      
-      break;  
-    case 'k': //king
-      
-      break;
-    case 'n'://cavalo 
-      
-      break;
-    
-    //preto  
-    case 'P': //piao P
-      
-      break;
-    case 'B': //bispo
-      
-      break;
-    case 'R': //rook
-      
-      break;
-    case 'Q': //rainha
-      
-      break;  
-    case 'K': //king
-      
-      break;
-    case 'N'://cavalo 
-      
-      break; 
-  }
-}
+
 
 void RegraChess(char peca,int casaAtual){
   switch (peca){
@@ -68,7 +24,7 @@ void RegraChess(char peca,int casaAtual){
     case 'p': //piao p
         clearBoard();
         mov=1;
-        if((casaAtual>=a2)|(casaAtual<=h2)){ // O pião na posição inicial pode movimentar 2 casas
+        if((casaAtual>=a2)&&(casaAtual<=h2)){ // O pião na posição inicial pode movimentar 2 casas
             mov = 2;
             //Serial.println("mov"+String(mov));
         }
@@ -95,6 +51,7 @@ void RegraChess(char peca,int casaAtual){
       break;  
     case 'k': //king
         clearBoard();
+        RegraRei(casaAtual);
       break;
     case 'n'://cavalo 
         clearBoard();
@@ -112,7 +69,7 @@ void RegraChess(char peca,int casaAtual){
     case 'P': //piao P
         clearBoard();
         mov=1;
-        if((casaAtual>=a7)|(casaAtual<=h7)){ // O pião na posição inicial pode movimentar 2 casas
+        if((casaAtual>=a7)&&(casaAtual<=h7)){ // O pião na posição inicial pode movimentar 2 casas
             mov = 2;
         }
         comeBoard[casaAtual + 9] = 1; // vai colocar um na casa que ele pode comer
@@ -122,22 +79,21 @@ void RegraChess(char peca,int casaAtual){
         }
       break;
     case 'B': //bispo
-        clearBoard();
-        RegraDiagonal(casaAtual);;
+      clearBoard();
+      RegraDiagonal(casaAtual);;
       break;
     case 'R': //rook
-        clearBoard();
-         RegraHorVert(casaAtual);
-        
+      clearBoard();
+      RegraHorVert(casaAtual);
       break;
     case 'Q': //rainha
-        clearBoard();
-        RegraDiagonal(casaAtual);
-        RegraHorVert(casaAtual);
+      clearBoard();
+      RegraDiagonal(casaAtual);
+      RegraHorVert(casaAtual);
       break;  
     case 'K': //king
-        clearBoard();
-
+      clearBoard();
+      RegraRei(casaAtual);
       break;
     case 'N'://cavalo 
         clearBoard();
@@ -198,6 +154,71 @@ void RegraDiagonal(int casaAtual){
                 moveBoard[a*8+b] = move2Board[a][b];
             }
         }     
+}
+
+bool testCasaBorda(int casaAtual, Lado lado){
+  switch (lado){
+  case Bottom://baixo
+    for(int i=0;i<8;i++){
+      if(casaAtual == a1+i){
+        return 1;
+      }
+    }
+    return 0;
+    break;
+  case Right://direita
+    for(int i=0;i<8;i++){
+      if(casaAtual == h8+i*8){
+        return 1;
+      }
+    }
+    return 0;
+    break;
+  case Left://esquerda
+    for(int i=0;i<8;i++){
+      if(casaAtual == a8+i*8){
+        return 1;
+      }
+    }
+    return 0;
+    break;
+  default://cima
+    for(int i=0;i<8;i++){
+      if(casaAtual == a8+i){
+        return 1;
+      }
+    }
+    return 0;
+    break;
+  }
+}
+
+void RegraRei(int casaAtual){
+  if(!testCasaBorda(casaAtual,Left)){
+    moveBoard[casaAtual - 1] = 1;
+  }
+  if(!testCasaBorda(casaAtual,Right)){
+    moveBoard[casaAtual + 1] = 1;
+  }
+  if(!testCasaBorda(casaAtual,Top)){
+    moveBoard[casaAtual - 8] = 1;
+  }
+  if(!testCasaBorda(casaAtual,Bottom)){
+    moveBoard[casaAtual + 8] = 1;
+  }
+
+  if(!((testCasaBorda(casaAtual,Left)) && ((testCasaBorda(casaAtual,Top))))){
+    moveBoard[casaAtual - 9] = 1;
+  }
+  if(!((testCasaBorda(casaAtual,Right)) && ((testCasaBorda(casaAtual,Top))))){
+    moveBoard[casaAtual - 7] = 1;
+  }
+  if(!((testCasaBorda(casaAtual,Right)) && ((testCasaBorda(casaAtual,Bottom))))){
+    moveBoard[casaAtual + 9] = 1;
+  }
+  if(!((testCasaBorda(casaAtual,Left)) && ((testCasaBorda(casaAtual,Bottom))))){
+    moveBoard[casaAtual + 7] = 1;
+  }  
 }
 
 void RegraHorVert(int casaAtual){
